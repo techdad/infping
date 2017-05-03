@@ -4,7 +4,7 @@
 package main
 
 import (
-    "github.com/influxdb/influxdb/client"
+    "github.com/influxdata/influxdb/client"
     "github.com/pelletier/go-toml"
     "fmt"
     "log"
@@ -74,7 +74,7 @@ func writePoints(config *toml.TomlTree, con *client.Client, url string, code int
     bps := client.BatchPoints{
         Points:          pts,
         Database:        db,
-        RetentionPolicy: "default",
+        RetentionPolicy: "fifteen_days",
     }
     _, err := con.Write(bps)
     perr(err)
