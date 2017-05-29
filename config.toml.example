@@ -1,10 +1,10 @@
 [influx]
 
-host = "174.138.50.14"
+host = "127.0.0.1"
 port = "8086"
 db = "ping"
 user = "ping"
-pass = "pongpongping"
+pass = "pong"
 
 [hosts]
 
