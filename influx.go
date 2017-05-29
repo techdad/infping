@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"time"
 
 	"github.com/influxdata/influxdb/client/v2"
@@ -53,7 +52,8 @@ func (i *InfluxClient) Write(point Point) error {
 	pt, err := client.NewPoint(
 		"ping",
 		map[string]string{
-			"host": point.Host,
+			"rx_host": point.RxHost,
+			"tx_host": point.TxHost,
 		},
 		fields,
 		time.Now())
@@ -71,6 +71,6 @@ func (i *InfluxClient) Write(point Point) error {
 	if i.retPolicy != "" {
 		bp.SetRetentionPolicy(i.retPolicy)
 	}
-	log.Println("writing data", point)
+
 	return i.influx.Write(bp)
 }

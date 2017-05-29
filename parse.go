@@ -4,16 +4,19 @@ import (
 	"bufio"
 	"context"
 	"log"
+	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 )
 
 var fpingArgs = []string{"-B 1", "-D", "-r0", "-O 0", "-Q 10", "-p 1000", "-l"}
+var hostname = mustHostname()
 
 // Point represents the fping results for a single host
 type Point struct {
-	Host        string
+	RxHost      string
+	TxHost      string
 	LossPercent int
 	Min         float64
 	Avg         float64
@@ -55,7 +58,8 @@ func runAndRead(ctx context.Context, hosts []string, con Client) error {
 				td := strings.FieldsFunc(times, slashSplitter)
 				min, avg, max = mustFloat(td[0]), mustFloat(td[1]), mustFloat(td[2])
 			}
-			pt := Point{Host: host, Min: min, Max: max, Avg: avg, LossPercent: lossp}
+			pt := Point{RxHost: host, Min: min, Max: max, Avg: avg, LossPercent: lossp}
+			pt.TxHost = hostname
 			if err := con.Write(pt); err != nil {
 				log.Printf("Error writing data point: %s", err)
 			}
@@ -78,6 +82,14 @@ func mustFloat(data string) float64 {
 		return 0.0
 	}
 	return flt
+}
+
+func mustHostname() string {
+	name, err := os.Hostname()
+	if err != nil {
+		panic("unable to find hostname " + err.Error())
+	}
+	return name
 }
 
 func slashSplitter(c rune) bool {
