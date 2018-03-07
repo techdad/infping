@@ -22,6 +22,7 @@ func main() {
 	viper.SetDefault("influx.pass", "")
 	viper.SetDefault("influx.secure", false)
 	viper.SetDefault("influx.db", "infping")
+	viper.SetDefault("hosts.hosts", []string{"localhost"})
 
 	viper.SetConfigName("infping")
 	viper.AddConfigPath("/etc/")
