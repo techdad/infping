@@ -2,7 +2,6 @@ package main
 
 import (
 	"time"
-
 	"github.com/influxdata/influxdb/client/v2"
 )
 
@@ -10,6 +9,7 @@ import (
 type Client interface {
 	Write(point Point) error
 	Ping() (time.Duration, string, error)
+	Query(q client.Query) (*client.Response, error)
 }
 
 // NewInfluxClient creates a concrete InfluxDB Writer
@@ -32,6 +32,11 @@ type InfluxClient struct {
 // Ping calls Ping on the underlying influx client
 func (i *InfluxClient) Ping() (time.Duration, string, error) {
 	return i.influx.Ping(time.Second)
+}
+
+// Query calls Query on	the underlying influx client
+func (i *InfluxClient) Query(q client.Query) (*client.Response, error) {
+	return i.influx.Query(q)
 }
 
 // Write writes a single point to influx
