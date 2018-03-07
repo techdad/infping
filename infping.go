@@ -16,12 +16,24 @@ import (
 )
 
 func main() {
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
+	viper.SetDefault("influx.host", "localhost")
+	viper.SetDefault("influx.port", "8086")
+	viper.SetDefault("influx.user", "")
+	viper.SetDefault("influx.pass", "")
+	viper.SetDefault("influx.secure", false)
+	viper.SetDefault("influx.db", "infping")
+
+	viper.SetConfigName("infping")
+	viper.AddConfigPath("/etc/")
+	viper.AddConfigPath("/usr/local/etc/")
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal("Unable to read config file", err)
 	}
 
+	influxScheme := "https"
+	if !viper.GetBool("influx.secure") {
+		influxScheme = "http"
+	}
 	influxHost := viper.GetString("influx.host")
 	influxPort := viper.GetString("influx.port")
 	influxUser := viper.GetString("influx.user")
@@ -31,9 +43,9 @@ func main() {
 
 	hosts := viper.GetStringSlice("hosts.hosts")
 
-	u, err := url.Parse(fmt.Sprintf("http://%s:%s", influxHost, influxPort))
+	u, err := url.Parse(fmt.Sprintf("%s://%s:%s", influsScheme, influxHost, influxPort))
 	if err != nil {
-		log.Fatal("Unable to parse Influx Host/Port", err)
+		log.Fatal("Unable to build valid Influx URL", err)
 	}
 
 	conf := client.HTTPConfig{
@@ -44,7 +56,7 @@ func main() {
 
 	rawClient, err := client.NewHTTPClient(conf)
 	if err != nil {
-		log.Fatal("Failed to create Influx Client", err)
+		log.Fatal("Failed to create Influx client", err)
 	}
 
 	influxClient := NewInfluxClient(rawClient, influxDB, influxRetPolicy)
