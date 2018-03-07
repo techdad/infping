@@ -68,6 +68,36 @@ func main() {
 	}
 	log.Printf("Pinged InfluxDB (version %s) in %v", version, dur)
 
+	q := client.Query{
+		Command: "SHOW DATABASES",
+	}
+	databases, err := influxClient.Query(q)
+	if err != nil {
+		log.Fatal("Unable to list databases", err)
+	}
+	if len(databases.Results) != 1 {
+		log.Fatal(fmt.Sprintf("Expected 1 result in response, got %d", len(databases.Results)))
+	}
+	if len(databases.Results[0].Series) != 1 {
+		log.Fatal(fmt.Sprintf("Expected 1 series in result, got %d", len(databases.Results[0].Series)))
+	}
+	found := false
+	for i := 0; i < len(databases.Results[0].Series[0].Values); i++ {
+		if databases.Results[0].Series[0].Values[i][0] == influxDB {
+			found = true
+		}
+	}
+	if !found {
+		q = client.Query{
+			Command: fmt.Sprintf("CREATE DATABASE %s", influxDB),
+		}
+		_, err := influxClient.Query(q)
+		if err != nil {
+			log.Fatal(fmt.Sprintf("Failed to create database %s", influxDB), err)
+		}
+		log.Printf("Created new database %s", influxDB)
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
