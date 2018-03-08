@@ -83,10 +83,10 @@ func main() {
 		log.Fatal("Unable to list databases", err)
 	}
 	if len(databases.Results) != 1 {
-		log.Fatal(fmt.Sprintf("Expected 1 result in response, got %d", len(databases.Results)))
+		log.Fatalf("Expected 1 result in response, got %d", len(databases.Results))
 	}
 	if len(databases.Results[0].Series) != 1 {
-		log.Fatal(fmt.Sprintf("Expected 1 series in result, got %d", len(databases.Results[0].Series)))
+		log.Fatalf("Expected 1 series in result, got %d", len(databases.Results[0].Series))
 	}
 	found := false
 	for i := 0; i < len(databases.Results[0].Series[0].Values); i++ {
@@ -100,7 +100,7 @@ func main() {
 		}
 		_, err := influxClient.Query(q)
 		if err != nil {
-			log.Fatal(fmt.Sprintf("Failed to create database %s", influxDB), err)
+			log.Fatalf("Failed to create database %s %v", influxDB, err)
 		}
 		log.Printf("Created new database %s", influxDB)
 	}
