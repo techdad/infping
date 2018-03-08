@@ -51,7 +51,7 @@ func main() {
 
 	hosts := viper.GetStringSlice("hosts.hosts")
 
-	u, err := url.Parse(fmt.Sprintf("%s://%s:%s", influsScheme, influxHost, influxPort))
+	u, err := url.Parse(fmt.Sprintf("%s://%s:%s", influxScheme, influxHost, influxPort))
 	if err != nil {
 		log.Fatal("Unable to build valid Influx URL", err)
 	}
