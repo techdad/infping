@@ -10,7 +10,6 @@ import (
 	"strings"
 )
 
-var fpingArgs = []string{"-B 1", "-D", "-r0", "-O 0", "-Q 10", "-p 1000", "-l"}
 var hostname = mustHostname()
 
 // Point represents the fping results for a single host
@@ -23,8 +22,11 @@ type Point struct {
 	Max         float64
 }
 
-func runAndRead(ctx context.Context, hosts []string, con Client) error {
-	args := append([]string(nil), fpingArgs...)
+func runAndRead(ctx context.Context, hosts []string, con Client, fpingConfig map[string]string) error {
+	args := []string(nil)
+	for k, v := range fpingConfig {
+		args = append(args, k, v)
+	}
 	for _, v := range hosts {
 		args = append(args, v)
 	}
