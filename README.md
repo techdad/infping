@@ -30,3 +30,6 @@ Data is stored in Influx with the following fields and tags:
 * **loss**: *field* showing packet loss during the run
 * **rx_host**: *tag* showing the target host
 * **tx_host**: *tag* showing the originating host of the ping check
+
+# Grafana Dashboard
+A sample Grafana dashboard is included, that plots all four of the collected ping statistics in something approximating the display of [Smokeping](https://smokeping.org/). Simply create a datasource named "ifping" and then import this dashboard. The `hostname` variable will be automatically populated with all the host names found in the database, and can be used to select different graphs.
