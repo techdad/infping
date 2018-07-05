@@ -92,7 +92,7 @@ func (i *InfluxClient) Write(point Point) error {
 		return err
 	}
 
-	batchConfig := client.BatchPointsConfig{Database: i.db, Precision: ""}
+	batchConfig := client.BatchPointsConfig{Database: i.db, Precision: "s"}
 	bp, err := client.NewBatchPoints(batchConfig)
 	if err != nil {
 		return err
