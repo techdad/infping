@@ -86,7 +86,7 @@ func (i *InfluxClient) Write(point Point) error {
 			"tx_host": point.TxHost,
 		},
 		fields,
-		time.Now())
+		point.Time)
 
 	if err != nil {
 		return err

@@ -32,12 +32,15 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var hostname = mustHostname()
+var last_time = time.Now()
 
 // Point represents the fping results for a single host
 type Point struct {
+	Time        time.Time
 	RxHost      string
 	TxHost      string
 	LossPercent int
@@ -71,7 +74,17 @@ func runAndRead(ctx context.Context, hosts []string, con Client, fpingConfig map
 		text := buff.Text()
 		fields := strings.Fields(text)
 
-		if len(fields) > 1 {
+		if len(fields) == 1 {
+			tm := strings.TrimLeft(fields[0], "[")
+			tm = strings.TrimRight(tm, "]")
+			parsed, err := time.Parse("15:04:05", tm)
+			if err != nil {
+				log.Printf("Failed to parse time %s: %s", tm, err)
+			} else {
+				now := time.Now()
+				last_time = time.Date(now.Year(), now.Month(), now.Day(), parsed.Hour(), parsed.Minute(), parsed.Second(), 0, time.Local)
+			}
+		} else {
 			host := fields[0]
 			data := fields[4]
 			dataSplitted := strings.Split(data, "/")
@@ -85,7 +98,7 @@ func runAndRead(ctx context.Context, hosts []string, con Client, fpingConfig map
 				td := strings.Split(times, "/")
 				min, avg, max = mustFloat(td[0]), mustFloat(td[1]), mustFloat(td[2])
 			}
-			pt := Point{RxHost: host, Min: min, Max: max, Avg: avg, LossPercent: lossp}
+			pt := Point{RxHost: host, Min: min, Max: max, Avg: avg, LossPercent: lossp, Time: last_time}
 			pt.TxHost = hostname
 			if err := con.Write(pt); err != nil {
 				log.Printf("Error writing data point: %s", err)
