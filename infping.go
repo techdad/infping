@@ -56,6 +56,7 @@ func main() {
 	viper.SetConfigName("infping")
 	viper.AddConfigPath("/etc/")
 	viper.AddConfigPath("/usr/local/etc/")
+	viper.AddConfigPath("/config/")
 	viper.AddConfigPath(".")
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal("Unable to read config file", err)
