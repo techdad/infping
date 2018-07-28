@@ -86,13 +86,13 @@ func (i *InfluxClient) Write(point Point) error {
 			"tx_host": point.TxHost,
 		},
 		fields,
-		time.Now())
+		point.Time)
 
 	if err != nil {
 		return err
 	}
 
-	batchConfig := client.BatchPointsConfig{Database: i.db, Precision: ""}
+	batchConfig := client.BatchPointsConfig{Database: i.db, Precision: "s"}
 	bp, err := client.NewBatchPoints(batchConfig)
 	if err != nil {
 		return err
