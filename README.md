@@ -42,6 +42,6 @@ docker run -v /local/infping.json:/config/infping.json $IMAGE
 It will automatically detect the configuration in `/config`. For best results, assign a hostname, otherwise you'll end up with one that doesn't make much sense
 
 # Grafana Dashboard
-A sample Grafana dashboard is included, that plots all four of the collected ping statistics in something approximating the display of [Smokeping](https://smokeping.org/). Simply create a datasource named "ifping" and then import this dashboard. The `hostname` variable will be automatically populated with all the host names found in the database, and can be used to select different graphs.
+A sample Grafana dashboard is included, that plots all four of the collected ping statistics in something approximating the display of [Smokeping](https://smokeping.org/). Simply create a datasource named "infping" pointing to Influx, and then import this dashboard. The `hostname` variable will be automatically populated with all the host names found in the database, and can be used to select different graphs.
 
 ![dashboard screenshot](https://raw.githubusercontent.com/miken32/infping/master/grafana_dashboard.png)
