@@ -10,14 +10,12 @@ action "Docker Login" {
 
 action "Docker Build" {
   uses = "actions/docker/cli@master"
-  runs = "build"
-  args = "-t infping ."
+  args = "build -t infping ."
   needs = ["Docker Login"]
 }
 
 action "Docker Push" {
   uses = "actions/docker/cli@master"
-  runs = "push"
-  args = "infping"
+  args = "push infping"
   needs = ["Docker Build"]
 }
