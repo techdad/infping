@@ -10,12 +10,12 @@ action "Docker Login" {
 
 action "Docker Build" {
   uses = "actions/docker/cli@master"
-  args = "build -t infping ."
+  args = "build -t registry.roci.nvw.io/infping ."
   needs = ["Docker Login"]
 }
 
 action "Docker Push" {
   uses = "actions/docker/cli@master"
-  args = "push infping"
+  args = "push registry.roci.nvw.io/infping"
   needs = ["Docker Build"]
 }
